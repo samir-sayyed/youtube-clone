@@ -4,8 +4,6 @@ import Body from "./components/Body";
 import Head from "./components/Head";
 import { store } from "./utils/store";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { element } from "prop-types";
-import VideoContainer from "./components/VideoContainer";
 import WatchPage from "./components/WatchPage";
 import MainContainer from "./components/MainContainer";
 

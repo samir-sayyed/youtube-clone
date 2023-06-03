@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 const OpenedSideBar = () => {
   return (
-    <div className="flex px-6 mx-4 py-4 shadow-md flex-col">
+    <div className="flex px-6 mr-4 w-[190px] py-1 flex-col mt-[70px] fixed  bg-white">
       <Link to="/">
-        <div className="flex flex-col my-5 items-center">
+        <div className="flex flex-col my-3 items-center">
           <img
             className="h-8"
             alt="alt"

@@ -5,10 +5,16 @@ import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   const isMenuOpen = useSelector((store) => store.app.isMenuOpen);
+  const isWatchPage = useSelector((store) => store.app.isWatchPage);
+
+  if (isWatchPage && isMenuOpen) return <OpenedSideBar />;
+
+  if (isWatchPage) return null;
+
   return isMenuOpen ? (
     <OpenedSideBar />
   ) : (
-    <div className="w-[200px] m-4 px-4 shadow-md">
+    <div className="fixed  bg-white w-[190px] px-4 mt-[70px]">
       <div>
         <Link to="/">
           <div className="flex items-center py-2 ">

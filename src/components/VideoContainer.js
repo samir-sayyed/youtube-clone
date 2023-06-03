@@ -2,15 +2,21 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import VideoCard from "./VideoCard";
 import { Link } from "react-router-dom";
+import { API_KEY, YOUTUBE_VIDEO_LINK } from "../utils/constants";
 
 const VideoContainer = () => {
   const [videoList, setVideoList] = useState(null);
-  const getVideos = async () => {
+  const getVideos = () => {
     try {
-      const response = await axios.get(
-        "https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&maxResults=50&regionCode=IN&key=AIzaSyByNvaZB4l1rkz9DIk11hsWCfghioUFRUU"
-      ); // Replace with your API endpoint
-      setVideoList(response.data?.items);
+      axios
+        .get(YOUTUBE_VIDEO_LINK + API_KEY)
+        .then((response) => {
+          const data = response.data;
+          setVideoList(data?.items);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -23,8 +29,8 @@ const VideoContainer = () => {
   return (
     <div className="flex flex-wrap justify-around">
       {videoList?.map((video) => (
-        <Link to={"/watch?v=" + video.id}>
-          <VideoCard key={video.id} videoInfo={video} />
+        <Link key={video.id} to={"/watch?v=" + video.id}>
+          <VideoCard videoInfo={video} />
         </Link>
       ))}
     </div>
