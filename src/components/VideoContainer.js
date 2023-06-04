@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import VideoCard from "./VideoCard";
 import { Link } from "react-router-dom";
 import { API_KEY, YOUTUBE_VIDEO_LINK } from "../utils/constants";
+import Shimmer from "./Shimmer";
 
 const VideoContainer = () => {
   const [videoList, setVideoList] = useState(null);
@@ -26,7 +27,9 @@ const VideoContainer = () => {
     getVideos();
   }, []);
 
-  return (
+  return !videoList ? (
+    <Shimmer />
+  ) : (
     <div className="flex flex-wrap justify-around">
       {videoList?.map((video) => (
         <Link key={video.id} to={"/watch?v=" + video.id}>

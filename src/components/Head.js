@@ -1,9 +1,10 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toggleMenu } from "../utils/appSlice";
 import { useEffect } from "react";
 import { useState } from "react";
 import { YOUTUBE_AUTO_SEARCH_API } from "../utils/constants";
 import axios from "axios";
+import { cacheSearchResults } from "../utils/searchSlice";
 
 const Head = () => {
   const dispatch = useDispatch();
@@ -11,12 +12,21 @@ const Head = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const searchCache = useSelector((store) => store.search);
+
   const searchKeywords = () => {
     axios
       .get(YOUTUBE_AUTO_SEARCH_API + searchQuery)
       .then((response) => {
         const data = response.data;
         setSuggestions(data[1]);
+        dispatch(
+          cacheSearchResults({
+            [searchQuery]: data[1],
+          })
+        );
       })
       .catch((error) => {
         console.error(error);
@@ -24,7 +34,13 @@ const Head = () => {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => searchKeywords(), 200);
+    const timer = setTimeout(() => {
+      if (searchCache[searchQuery]) {
+        setSuggestions(searchCache[searchQuery]);
+      } else {
+        searchKeywords();
+      }
+    }, 200);
     return () => {
       clearTimeout(timer);
     };
@@ -58,6 +74,8 @@ const Head = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="h-8 w-[500px] border border-gray-300 rounded-l-full px-4"
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setShowSuggestions(false)}
           />
           <button className="text-md' h-8 rounded-r-full border border-gray-300 bg-gray-50">
             <img
@@ -72,23 +90,25 @@ const Head = () => {
             src="https://icons.veryicon.com/png/o/miscellaneous/the-font-is-great/microphone-89.png"
           />
         </div>
-        <div className="fixed bg-white w-[500px] rounded-lg shadow-lg  my-8 max-h-[400px] overflow-y-auto">
-          <ul>
-            {suggestions.map((suggestion) => (
-              <li
-                key={suggestion}
-                className="py-1 flex items-center hover:bg-gray-100 px-4"
-              >
-                <img
-                  className="h-4 mr-4"
-                  alt="profile-pic"
-                  src="https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/search-512.png"
-                />
-                {suggestion}
-              </li>
-            ))}
-          </ul>
-        </div>
+        {showSuggestions && (
+          <div className="fixed bg-white w-[500px] rounded-lg shadow-lg  my-8 max-h-[400px] overflow-y-auto">
+            <ul>
+              {suggestions.map((suggestion) => (
+                <li
+                  key={suggestion}
+                  className="py-1 flex items-center hover:bg-gray-100 px-4"
+                >
+                  <img
+                    className="h-4 mr-4"
+                    alt="profile-pic"
+                    src="https://cdn2.iconfinder.com/data/icons/ios-7-icons/50/search-512.png"
+                  />
+                  {suggestion}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
       <div className="flex">
         <img
