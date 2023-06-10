@@ -1,6 +1,7 @@
 import CommentsContainer from "./CommentsContainer";
 import SimilarVideosContainer from "./SimilarVideosContainer";
 import Video from "./Video";
+import VideoSideContainer from "./VideoSideContainer";
 
 const WatchPage = () => {
   return (
@@ -9,7 +10,7 @@ const WatchPage = () => {
         <Video />
         <CommentsContainer />
       </div>
-      <SimilarVideosContainer />
+      <VideoSideContainer />
     </div>
   );
 };
